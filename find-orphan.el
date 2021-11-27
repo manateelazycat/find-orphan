@@ -114,7 +114,8 @@
           (message "Found below orphan functions in current %s." location)
           (message "--------")
           (mapcar #'(lambda (f) (message "%s" f)) noreference-functions)
-          (message "--------"))
+          (message "--------")
+          (message "Found %s orphan functions, switch to buffer `*Messages*' to review." (length noreference-functions)))
       (message "Yay, no orphan function found in current %s." location))))
 
 (defun find-orphan-function-in-buffer ()
