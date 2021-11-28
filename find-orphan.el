@@ -108,6 +108,7 @@
   (let* ((function-nodes (append (find-orphan-get-match-nodes "(function_definition name: (symbol) @x)")
                                  (find-orphan-get-match-nodes "(function_definition name: (identifier) @x)")
                                  (find-orphan-get-match-nodes "(method_declaration name: (identifier) @x)")
+                                 (find-orphan-get-match-nodes "(function_declaration name: (identifier) @x)")
                                  ))
          (function-names (mapcar #'tsc-node-text function-nodes))
          (noreference-functions (remove-if-not #'(lambda (f) (<= (funcall match-times-func f) 1)) function-names)))
