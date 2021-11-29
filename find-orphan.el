@@ -80,6 +80,7 @@
 ;;
 
 ;;; Require
+(require 'cl-lib)
 (require 'tree-sitter)
 
 ;;; Code:
@@ -111,7 +112,7 @@
                                  (find-orphan-get-match-nodes "(function_declaration name: (identifier) @x)")
                                  ))
          (function-names (mapcar #'tsc-node-text function-nodes))
-         (noreference-functions (remove-if-not #'(lambda (f) (<= (funcall match-times-func f) 1)) function-names)))
+         (noreference-functions (cl-remove-if-not #'(lambda (f) (<= (funcall match-times-func f) 1)) function-names)))
     (if (> (length noreference-functions) 0)
         (progn
           (message "Found below orphan functions in current %s." location)
