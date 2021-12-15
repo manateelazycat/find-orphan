@@ -85,6 +85,8 @@
 
 ;;; Code:
 
+(defvar find-orphan-search-dir nil)
+
 (defun find-orphan-get-match-nodes (match-rule)
   (ignore-errors
     (let* ((query (tsc-make-query tree-sitter-language match-rule))
@@ -101,7 +103,7 @@
     match-count))
 
 (defun find-orphan-match-times-in-directory (search-string)
-  (let ((search-command (format "rg --no-ignore -g '!node_modules' -g '!dist' %s --stats -q" search-string)))
+  (let ((search-command (format "rg --no-ignore -g '!node_modules' -g '!dist' %s %s --stats -q" search-string find-orphan-search-dir)))
     (string-to-number (nth 0 (split-string (nth 1 (split-string (shell-command-to-string search-command) "\n")))))))
 
 (defun find-orphan-function (match-times-func location)
@@ -128,6 +130,7 @@
 
 (defun find-orphan-function-in-directory ()
   (interactive)
+  (setq find-orphan-search-dir (expand-file-name (read-directory-name "Find orphan function at directory: ")))
   (find-orphan-function 'find-orphan-match-times-in-directory "directory"))
 
 (provide 'find-orphan)
