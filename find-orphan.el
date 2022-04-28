@@ -103,7 +103,7 @@
     match-count))
 
 (defun find-orphan-match-times-in-directory (search-string)
-  (let ((search-command (format "rg --no-ignore -g '!node_modules' -g '!dist' %s %s --stats -q" search-string find-orphan-search-dir)))
+  (let ((search-command (format "rg --no-ignore -g '!node_modules' -g '!dist' -e %s %s --stats -q" search-string find-orphan-search-dir)))
     (string-to-number (nth 0 (split-string (nth 1 (split-string (shell-command-to-string search-command) "\n")))))))
 
 (defun find-orphan-function (match-times-func location)
