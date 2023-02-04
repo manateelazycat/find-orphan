@@ -81,18 +81,19 @@
 
 ;;; Require
 (require 'cl-lib)
-(require 'tree-sitter)
+(require 'treesit)
 
 ;;; Code:
 
 (defvar find-orphan-search-dir nil)
 
-(defun find-orphan-get-match-nodes (match-rule)
+(defun find-orphan-get-match-nodes (query)
   (ignore-errors
-    (let* ((query (tsc-make-query tree-sitter-language match-rule))
-           (root-node (tsc-root-node tree-sitter-tree))
-           (captures (mapcar #'cdr (tsc-query-captures query root-node #'tsc--buffer-substring-no-properties))))
-      captures)))
+    (mapcar #'(lambda (range)
+                (treesit-node-at (car range)))
+            (treesit-query-range
+             (treesit-node-language (treesit-buffer-root-node))
+             query))))
 
 (defun find-orphan-match-times-in-buffer (search-string)
   (let ((match-count 0))
@@ -108,13 +109,14 @@
 
 (defun find-orphan-function (match-times-func location)
   (interactive)
-  (let* ((function-nodes (append (find-orphan-get-match-nodes "(function_definition name: (symbol) @x)")
-                                 (find-orphan-get-match-nodes "(function_definition name: (identifier) @x)")
-                                 (find-orphan-get-match-nodes "(method_declaration name: (identifier) @x)")
-                                 (find-orphan-get-match-nodes "(function_declaration name: (identifier) @x)")
+  (let* ((function-nodes (append (find-orphan-get-match-nodes '((function_definition name: (symbol) @name)))
+                                 (find-orphan-get-match-nodes '((function_definition name: (identifier) @x)))
+                                 (find-orphan-get-match-nodes '((method_declaration name: (identifier) @x)))
+                                 (find-orphan-get-match-nodes '((function_declaration name: (identifier) @x)))
                                  ))
-         (function-names (mapcar #'tsc-node-text function-nodes))
+         (function-names (mapcar #'treesit-node-text function-nodes))
          (noreference-functions (cl-remove-if-not #'(lambda (f) (<= (funcall match-times-func f) 1)) function-names)))
+
     (if (> (length noreference-functions) 0)
         (progn
           (message "Found below orphan functions in current %s." location)
