@@ -9,7 +9,7 @@ Repeat the above work in a large project will spend a lot of time.
 Now, you can use command ```find-orphan-function-in-directory```, it will print all orphan functions in current project.
 
 ## Installation
-1. Install tree-sitter first: https://emacs-tree-sitter.github.io/installation/
+1. Install Emacs 29 or above to support treesit
 2. Install [ripgrep](https://github.com/BurntSushi/ripgrep)
 3. Clone or download this repository (path of the folder is the `<path-to-find-orphan>` used below).
 
